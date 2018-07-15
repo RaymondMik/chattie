@@ -45,6 +45,10 @@ function submitMessageSocketEvent(e) {
         receiver: 'jillie@poo.com',
         body: inputValue
     });
+    e.target.reset();
+    socket.emit('sendUserIsTyping', {
+        text: null
+    });
 }
 
 input.addEventListener('input', userIsTyping);

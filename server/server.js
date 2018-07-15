@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
+const {generateMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public');
 const app = express();
@@ -24,12 +25,7 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         // emit event to all connections
-        io.emit('newMessage', {
-            sender: message.sender,
-            receiver: message.receiver,
-            body: message.body,
-            createdAt: new Date().getTime()
-        })
+        io.emit('newMessage', generateMessage(message));
     });
 });
 
