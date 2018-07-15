@@ -1,7 +1,7 @@
 const socket = io('http://localhost:3000');
 
-
 const messageBoard = document.querySelector('div.message-board');
+const userInteraction = document.querySelector('div.user-interaction-message');
 const form = document.querySelector('form');
 const input = document.querySelector('input[type="text"]');
 
@@ -19,10 +19,22 @@ socket.on('newMessage', function(message) {
     messageBoard.appendChild(messageHtml);
 });
 
-function userIsTypingSocketEVent() {
-    socket.emit('userIsTyping', {
-        message: 'user is typing...'
-    });
+socket.on('broadcastUserIsTyping', function(message) {
+    userInteraction.innerText = message;
+});
+
+const userIsTypingString = 'user is typing...';
+
+function userIsTyping(e) {
+    if (!e.target.value.length) {
+        socket.emit('sendUserIsTyping', {
+            text: null
+        });
+    } else {
+        socket.emit('sendUserIsTyping', {
+            text: userIsTypingString
+        });
+    }
 }
 
 function submitMessageSocketEvent(e) {
@@ -35,5 +47,5 @@ function submitMessageSocketEvent(e) {
     });
 }
 
-input.addEventListener('input', userIsTypingSocketEVent);
+input.addEventListener('input', userIsTyping);
 form.addEventListener('submit', submitMessageSocketEvent);

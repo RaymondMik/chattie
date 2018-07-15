@@ -6,8 +6,7 @@ const socketIO = require('socket.io');
 const publicPath = path.join(__dirname, '../public');
 const app = express();
 const server = http.createServer(app);
-var io = socketIO(server);
-
+const io = socketIO(server);
 const port = process.env.PORT || 3000;
 
 // Middlewares
@@ -19,15 +18,17 @@ io.on('connection', (socket) => {
         console.log('User was disconnected');
     });
 
-    socket.on('userIsTyping', (message) => {
-        console.log(message.message);
+    socket.on('sendUserIsTyping', (message) => {
+        socket.broadcast.emit('broadcastUserIsTyping', message.text);
     }); 
 
     socket.on('createMessage', (message) => {
-        socket.emit('newMessage', {
+        // emit event to all connections
+        io.emit('newMessage', {
             sender: message.sender,
             receiver: message.receiver,
-            body: message.body
+            body: message.body,
+            createdAt: new Date().getTime()
         })
     });
 });
