@@ -23,9 +23,10 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('broadcastUserIsTyping', message.text);
     }); 
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         // emit event to all connections
         io.emit('newMessage', generateMessage(message));
+        callback('server acknolwedged message creation');
     });
 });
 

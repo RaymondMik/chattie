@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000');
 
-const messageBoard = document.querySelector('div.message-board');
+const messageBoard = document.querySelector('ul.message-board');
 const userInteraction = document.querySelector('div.user-interaction-message');
 const form = document.querySelector('form');
 const input = document.querySelector('input[type="text"]');
@@ -14,8 +14,8 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(message) {
-    const messageHtml = document.createElement('div');
-    messageHtml.innerText = message.body;
+    const messageHtml = document.createElement('li');
+    messageHtml.innerText = `${message.sender} wrote: ${message.body}`;
     messageBoard.appendChild(messageHtml);
 });
 
@@ -44,6 +44,8 @@ function submitMessageSocketEvent(e) {
         sender: 'romualdo@bigul.com',
         receiver: 'jillie@poo.com',
         body: inputValue
+    }, function (data) {
+        console.log(`Client got: ${data}`);
     });
     e.target.reset();
     socket.emit('sendUserIsTyping', {
